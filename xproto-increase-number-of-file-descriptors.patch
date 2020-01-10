@@ -1,0 +1,83 @@
+From 2c94cdb453bc641246cc8b9a876da9799bee1ce7 Mon Sep 17 00:00:00 2001
+From: Olivier Fourdan <ofourdan@redhat.com>
+Date: Fri, 29 May 2015 18:16:34 +0200
+Subject: [PATCH 1/2] Increase the number of file descriptors
+
+To allow up to 512 clients, the number of file descriptors being
+monitored need to be increased accordingly.
+
+Signed-off-by: Adam Jackson <ajax@redhat.com>
+Signed-off-by: Olivier Fourdan <ofourdan@redhat.com>
+Reviewed-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+---
+ Xpoll.h.in | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/Xpoll.h.in b/Xpoll.h.in
+index 0a05424..01be164 100644
+--- a/Xpoll.h.in
++++ b/Xpoll.h.in
+@@ -67,7 +67,7 @@ typedef long fd_mask;
+ # endif
+ #endif
+ 
+-#define XFD_SETSIZE	256
++#define XFD_SETSIZE	512
+ 
+ #ifndef FD_SETSIZE
+ #define FD_SETSIZE	XFD_SETSIZE
+@@ -127,7 +127,16 @@ typedef struct fd_set {
+         (howmany(FD_SETSIZE, NFDBITS) > 4 && (__XFDS_BITS(p, 4))) || \
+         (howmany(FD_SETSIZE, NFDBITS) > 5 && (__XFDS_BITS(p, 5))) || \
+         (howmany(FD_SETSIZE, NFDBITS) > 6 && (__XFDS_BITS(p, 6))) || \
+-        (howmany(FD_SETSIZE, NFDBITS) > 7 && (__XFDS_BITS(p, 7))))
++        (howmany(FD_SETSIZE, NFDBITS) > 7 && (__XFDS_BITS(p, 7))) || \
++        (howmany(FD_SETSIZE, NFDBITS) > 8 && (__XFDS_BITS(p, 8))) || \
++        (howmany(FD_SETSIZE, NFDBITS) > 9 && (__XFDS_BITS(p, 9))) || \
++        (howmany(FD_SETSIZE, NFDBITS) > 10 && (__XFDS_BITS(p, 10))) || \
++        (howmany(FD_SETSIZE, NFDBITS) > 11 && (__XFDS_BITS(p, 11))) || \
++        (howmany(FD_SETSIZE, NFDBITS) > 12 && (__XFDS_BITS(p, 12))) || \
++        (howmany(FD_SETSIZE, NFDBITS) > 13 && (__XFDS_BITS(p, 13))) || \
++        (howmany(FD_SETSIZE, NFDBITS) > 14 && (__XFDS_BITS(p, 14))) || \
++        (howmany(FD_SETSIZE, NFDBITS) > 15 && (__XFDS_BITS(p, 15))))
++
+ 
+ #define XFD_COPYSET(src,dst) { \
+         int __i__; \
+-- 
+2.5.0
+
+From edc04f87c74abacb57782dc947f81a2810a72537 Mon Sep 17 00:00:00 2001
+From: Olivier Fourdan <ofourdan@redhat.com>
+Date: Wed, 26 Aug 2015 10:11:11 +0200
+Subject: [PATCH 2/2] Raise the number of FD on WIN32 as well
+
+Commit 2c94cdb raised the number of file descriptors from 256 to 512
+but only for non-WIN32 platforms.
+
+The definition of XFD_SETSIZE being duplicated, we need to do the same
+for WIN32 builds as well otherwise a newer X server trying to
+use more than 256 clients would fail on that platform.
+
+Signed-off-by: Olivier Fourdan <ofourdan@redhat.com>
+Reviewed-by: Jon TURNEY <jon.turney@dronecode.org.uk>
+---
+ Xpoll.h.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Xpoll.h.in b/Xpoll.h.in
+index 01be164..2878591 100644
+--- a/Xpoll.h.in
++++ b/Xpoll.h.in
+@@ -165,7 +165,7 @@ typedef struct fd_set {
+ 
+ #else /* WIN32 */
+ 
+-#define XFD_SETSIZE	256
++#define XFD_SETSIZE	512
+ #ifndef FD_SETSIZE
+ #define FD_SETSIZE	XFD_SETSIZE
+ #endif
+-- 
+2.5.0
+
