@@ -6,8 +6,8 @@
 
 Summary: X.Org X11 Protocol headers
 Name: xorg-x11-proto-devel
-Version: 7.6
-Release: 25%{?dist}
+Version: 7.7
+Release: 9%{?dist}
 License: MIT
 Group: Development/System
 URL: http://www.x.org
@@ -18,12 +18,14 @@ Source1:  http://xorg.freedesktop.org/archive/individual/proto/compositeproto-0.
 Source2:  http://xorg.freedesktop.org/archive/individual/proto/damageproto-1.2.1.tar.bz2
 Source3:  http://xorg.freedesktop.org/archive/individual/proto/dmxproto-2.3.1.tar.bz2
 Source31: http://xorg.freedesktop.org/archive/individual/proto/dri2proto-2.8.tar.bz2
+Source33: http://xorg.freedesktop.org/pub/individual/proto/dri3proto-1.0.tar.bz2
 Source4:  http://xorg.freedesktop.org/archive/individual/proto/evieext-1.1.1.tar.bz2
 Source5:  http://xorg.freedesktop.org/archive/individual/proto/fixesproto-5.0.tar.bz2
 Source7:  http://xorg.freedesktop.org/archive/individual/proto/fontsproto-2.1.2.tar.bz2
-Source8:  http://xorg.freedesktop.org/archive/individual/proto/glproto-1.4.16.tar.bz2
-Source9:  http://xorg.freedesktop.org/archive/individual/proto/inputproto-2.2.tar.bz2
+Source8:  http://xorg.freedesktop.org/archive/individual/proto/glproto-1.4.17.tar.bz2
+Source9:  http://xorg.freedesktop.org/archive/individual/proto/inputproto-2.3.tar.bz2
 Source10: http://xorg.freedesktop.org/archive/individual/proto/kbproto-1.0.6.tar.bz2
+Source32: http://xorg.freedesktop.org/archive/individual/proto/presentproto-1.0.tar.bz2
 Source13: http://xorg.freedesktop.org/archive/individual/proto/randrproto-1.4.0.tar.bz2
 Source14: http://xorg.freedesktop.org/archive/individual/proto/recordproto-1.14.2.tar.bz2
 Source15: http://xorg.freedesktop.org/archive/individual/proto/renderproto-0.11.1.tar.bz2
@@ -31,20 +33,24 @@ Source16: http://xorg.freedesktop.org/archive/individual/proto/resourceproto-1.2
 Source17: http://xorg.freedesktop.org/archive/individual/proto/scrnsaverproto-1.2.2.tar.bz2
 Source19: http://xorg.freedesktop.org/archive/individual/proto/videoproto-2.3.1.tar.bz2
 Source20: http://xorg.freedesktop.org/archive/individual/proto/xcmiscproto-1.2.2.tar.bz2
-Source21: http://xorg.freedesktop.org/archive/individual/proto/xextproto-7.2.1.tar.bz2
+Source21: http://xorg.freedesktop.org/archive/individual/proto/xextproto-7.2.99.901.tar.bz2
 Source22: http://xorg.freedesktop.org/archive/individual/proto/xf86bigfontproto-1.2.0.tar.bz2
 Source23: http://xorg.freedesktop.org/archive/individual/proto/xf86dgaproto-2.1.tar.bz2
 Source24: http://xorg.freedesktop.org/archive/individual/proto/xf86driproto-2.1.1.tar.bz2
 Source25: http://xorg.freedesktop.org/archive/individual/proto/xf86miscproto-0.9.3.tar.bz2
 Source27: http://xorg.freedesktop.org/archive/individual/proto/xf86vidmodeproto-2.3.1.tar.bz2
 Source28: http://xorg.freedesktop.org/archive/individual/proto/xineramaproto-1.2.1.tar.bz2
-Source29: http://xorg.freedesktop.org/archive/individual/proto/xproto-7.0.23.tar.bz2
+Source29: http://xorg.freedesktop.org/archive/individual/proto/xproto-7.0.24.tar.bz2
 Source30: http://xorg.freedesktop.org/archive/individual/proto/xproxymanagementprotocol-1.0.3.tar.bz2
 
 Source40: make-git-snapshot.sh
 
+Patch0: fontsproto-0001-Replace-pointer-with-the-equivalent-void.patch
+Patch1: xproto-0001-Replace-pointer-with-explicit-void.patch
+
 BuildRequires: pkgconfig
 BuildRequires: xorg-x11-util-macros >= 1.0.2-1
+BuildRequires: autoconf automake libtool
 
 %if ! %{build_bootstrap}
 Requires: mesa-libGL-devel
@@ -56,7 +62,15 @@ Requires: pkgconfig
 X.Org X11 Protocol headers
 
 %prep
-%setup -q -c %{name}-%{version} -a1 -a2 -a3 -a4 -a5 -a7 -a8 -a9 -a10 -a13 -a14 -a15 -a16 -a17 -a19 -a20 -a21 -a22 -a23 -a24 -a25 -a27 -a28 -a29 -a30 -a31
+%setup -q -c %{name}-%{version} -a1 -a2 -a3 -a4 -a5 -a7 -a8 -a9 -a10 -a13 -a14 -a15 -a16 -a17 -a19 -a20 -a21 -a22 -a23 -a24 -a25 -a27 -a28 -a29 -a30 -a31 -a32 -a33
+
+pushd fontsproto-*
+%patch0 -p1
+popd
+
+pushd xproto-*
+%patch1 -p1
+popd
 
 %build
 
@@ -65,8 +79,11 @@ for dir in $(ls -1) ; do
 	pushd $dir
         [ -e configure ] || ./autogen.sh
 	# yes, this looks horrible, but it's to get the .pc files in datadir
+	autoreconf -vif
 	%configure --libdir=%{_datadir} --without-xmlto
 	make %{?_smp_mflags}
+	# XXX presentproto, dri3proto missing this initially
+	[ -e COPYING ] || touch COPYING
 	mv COPYING COPYING-${dir%%-*}
 	popd
 done
@@ -174,6 +191,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/X11/extensions/dpmsproto.h
 %{_includedir}/X11/extensions/dri2proto.h
 %{_includedir}/X11/extensions/dri2tokens.h
+%{_includedir}/X11/extensions/dri3proto.h
 %{_includedir}/X11/extensions/evieproto.h
 %{_includedir}/X11/extensions/ge.h
 %{_includedir}/X11/extensions/geproto.h
@@ -184,6 +202,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/X11/extensions/multibufconst.h
 %{_includedir}/X11/extensions/multibufproto.h
 %{_includedir}/X11/extensions/panoramiXproto.h
+%{_includedir}/X11/extensions/presentproto.h
+%{_includedir}/X11/extensions/presenttokens.h
 %{_includedir}/X11/extensions/randr.h
 %{_includedir}/X11/extensions/randrproto.h
 %{_includedir}/X11/extensions/recordconst.h
@@ -242,12 +262,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/pkgconfig/damageproto.pc
 %{_datadir}/pkgconfig/dmxproto.pc
 %{_datadir}/pkgconfig/dri2proto.pc
+%{_datadir}/pkgconfig/dri3proto.pc
 %{_datadir}/pkgconfig/evieproto.pc
 %{_datadir}/pkgconfig/fixesproto.pc
 %{_datadir}/pkgconfig/fontsproto.pc
 %{_datadir}/pkgconfig/glproto.pc
 %{_datadir}/pkgconfig/inputproto.pc
 %{_datadir}/pkgconfig/kbproto.pc
+%{_datadir}/pkgconfig/presentproto.pc
 %{_datadir}/pkgconfig/randrproto.pc
 %{_datadir}/pkgconfig/recordproto.pc
 %{_datadir}/pkgconfig/renderproto.pc
@@ -266,14 +288,85 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/pkgconfig/xproxymngproto.pc
 
 %changelog
-* Wed Aug 29 2012 Peter Hutterer <peter.hutterer@redhat.com> 7.6-25
-- Drop now un-used patch file
+* Thu Jan 23 2014 Adam Jackson <ajax@redhat.com> 7.7-9
+- Backport pointer-to-void* changes
+
+* Tue Dec 10 2013 Adam Jackson <ajax@redhat.com> 7.7-8
+- glproto 1.4.17
+
+* Wed Nov 06 2013 Adam Jackson <ajax@redhat.com> 7.7-7
+- presentproto 1.0
+- dri3proto 1.0
+- xextproto 7.2.99.901
+
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.7-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Tue Apr 02 2013 Peter Hutterer <peter.hutterer@redhat.com> 7.7-5
+- xproto 7.0.24
+
+* Thu Mar 07 2013 Dave Airlie <airlied@redhat.com> 7.7-4
+- autoreconf for aarch64
+
+* Thu Mar 07 2013 Peter Hutterer <peter.hutterer@redhat.com> 7.7-3
+- inputproto 2.3
+
+* Fri Feb 15 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.7-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
+* Tue Jan 08 2013 Adam Jackson <ajax@redhat.com> 7.7-1
+- inputproto 2.2.99.1
 
 * Thu Jul 26 2012 Peter Hutterer <peter.hutterer@redhat.com> 7.6-24
-- Merge from F18 (#835206)
+- bigregsproto 1.1.2
+- compositeproto 0.4.2
+- damageproto 1.2.1
+- fontsproto 2.1.2
+- inputproto 2.2
+- kbproto 1.0.6
+- recordproto 1.14.2
+- scrnsaverproto 1.2.2
+- xcmiscproto 1.2.2
+- xextproto 7.2.1
+
+* Sun Jul 22 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.6-23
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Thu Jul 12 2012 Dave Airlie <airlied@redhat.com> 7.6-22
+- glproto 1.4.16
+- dri2proto 2.8
+- randrproto 1.4.0
+
+* Fri Mar 16 2012 Adam Jackson <ajax@redhat.com> 7.6-21
+- xproto 7.0.23
+
+* Wed Feb 15 2012 Peter Hutterer <peter.hutterer@redhat.com> 7.6-20
+- inputproto 2.1.99.6
+
+* Thu Jan 26 2012 Dave Airlie <airlied@redhat.com> 7.6-19
+- glproto 1.4.15
+
+* Mon Jan 09 2012 Peter Hutterer <peter.hutterer@redhat.com> 7.6-18
+- inputproto 2.1.99.5
+
+* Wed Dec 21 2011 Peter Hutterer <peter.hutterer@redhat.com> 7.6-17
+- inputproto 2.1.99.4
+
+* Fri Dec 16 2011 Peter Hutterer <peter.hutterer@redhat.com> 7.6-16
+- inputproto 2.1
+
+* Wed Nov 09 2011 Peter Hutterer <peter.hutterer@redhat.com> 7.6-15
+- Err, that should have been inputproto 2.0.99.1
+
+* Wed Nov 09 2011 Peter Hutterer <peter.hutterer@redhat.com> 7.6-14
+- inputproto 2.1.99.1
 
 * Wed Sep 21 2011 Adam Jackson <ajax@redhat.com> 7.6-13
-- Build --without-xmlto (#739242)
+- Build --without-xmlto
+
+* Thu Jun 30 2011 Peter Hutterer <peter.hutterer@redhat.com> 7.6-12
+- glproto 1.4.14
+- dri2proto 2.6
 
 * Thu Jun 23 2011 Peter Hutterer <peter.hutterer@redhat.com> 7.6-11
 - xproto 7.0.22
