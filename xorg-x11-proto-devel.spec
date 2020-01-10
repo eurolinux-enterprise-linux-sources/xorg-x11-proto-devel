@@ -7,7 +7,7 @@
 Summary: X.Org X11 Protocol headers
 Name: xorg-x11-proto-devel
 Version: 7.7
-Release: 13%{?dist}
+Release: 14%{?dist}
 License: MIT
 Group: Development/System
 URL: http://www.x.org
@@ -26,7 +26,7 @@ Source8:  http://xorg.freedesktop.org/archive/individual/proto/glproto-1.4.17.ta
 Source9:  http://xorg.freedesktop.org/archive/individual/proto/inputproto-2.3.1.tar.bz2
 Source10: http://xorg.freedesktop.org/archive/individual/proto/kbproto-1.0.6.tar.bz2
 Source32: http://xorg.freedesktop.org/archive/individual/proto/presentproto-1.0.tar.bz2
-Source13: http://xorg.freedesktop.org/archive/individual/proto/randrproto-1.4.0.tar.bz2
+Source13: http://xorg.freedesktop.org/archive/individual/proto/randrproto-1.5.0.tar.bz2
 Source14: http://xorg.freedesktop.org/archive/individual/proto/recordproto-1.14.2.tar.bz2
 Source15: http://xorg.freedesktop.org/archive/individual/proto/renderproto-0.11.1.tar.bz2
 Source16: http://xorg.freedesktop.org/archive/individual/proto/resourceproto-1.2.0.tar.bz2
@@ -46,7 +46,6 @@ Source30: http://xorg.freedesktop.org/archive/individual/proto/xproxymanagementp
 Source40: make-git-snapshot.sh
 
 Patch1: presentproto-0001-Force-Window-and-Pixmap-to-be-CARD32-on-the-wire.patch
-Patch2: randrproto-0001-Add-a-GUID-property.patch
 Patch3: xproto-increase-number-of-file-descriptors.patch
 
 BuildRequires: pkgconfig
@@ -68,10 +67,6 @@ X.Org X11 Protocol headers
 
 pushd presentproto-*
 %patch1 -p1
-popd
-
-pushd randrproto-*
-%patch2 -p1
 popd
 
 pushd xproto-*
@@ -291,6 +286,9 @@ rm -f $RPM_BUILD_ROOT%{_docdir}/*/*.{html,svg}
 %{_datadir}/pkgconfig/xproxymngproto.pc
 
 %changelog
+* Thu Jan 05 2017 Benjamin Tissoires <benjamin.tissoires@redhat.com> 7.7-14
+- randrproto-1.5.0 (#1414731)
+
 * Mon Jan 4 2016 Olivier Fourdan <ofourdan@redhat.com> - 7.7-13
 - xproto: Increase number of file descriptors to 512
 
