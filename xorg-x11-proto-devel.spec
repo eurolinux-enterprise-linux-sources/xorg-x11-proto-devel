@@ -7,38 +7,38 @@
 Summary: X.Org X11 Protocol headers
 Name: xorg-x11-proto-devel
 Version: 7.6
-Release: 13%{?dist}
+Release: 25%{?dist}
 License: MIT
 Group: Development/System
 URL: http://www.x.org
 BuildArch: noarch
 
-Source0:  http://xorg.freedesktop.org/archive/individual/proto/bigreqsproto-1.1.0.tar.bz2
-Source1:  http://xorg.freedesktop.org/archive/individual/proto/compositeproto-0.4.1.tar.bz2
-Source2:  http://xorg.freedesktop.org/archive/individual/proto/damageproto-1.2.0.tar.bz2
+Source0:  http://xorg.freedesktop.org/archive/individual/proto/bigreqsproto-1.1.2.tar.bz2
+Source1:  http://xorg.freedesktop.org/archive/individual/proto/compositeproto-0.4.2.tar.bz2
+Source2:  http://xorg.freedesktop.org/archive/individual/proto/damageproto-1.2.1.tar.bz2
 Source3:  http://xorg.freedesktop.org/archive/individual/proto/dmxproto-2.3.1.tar.bz2
-Source31: http://xorg.freedesktop.org/archive/individual/proto/dri2proto-2.3.tar.bz2
+Source31: http://xorg.freedesktop.org/archive/individual/proto/dri2proto-2.8.tar.bz2
 Source4:  http://xorg.freedesktop.org/archive/individual/proto/evieext-1.1.1.tar.bz2
 Source5:  http://xorg.freedesktop.org/archive/individual/proto/fixesproto-5.0.tar.bz2
-Source7:  http://xorg.freedesktop.org/archive/individual/proto/fontsproto-2.1.0.tar.bz2
-Source8:  http://xorg.freedesktop.org/archive/individual/proto/glproto-1.4.12.tar.bz2
-Source9:  http://xorg.freedesktop.org/archive/individual/proto/inputproto-2.0.2.tar.bz2
-Source10: http://xorg.freedesktop.org/archive/individual/proto/kbproto-1.0.5.tar.bz2
-Source13: http://xorg.freedesktop.org/archive/individual/proto/randrproto-20110224-git105a161.tar.bz2
-Source14: http://xorg.freedesktop.org/archive/individual/proto/recordproto-1.14.1.tar.bz2
+Source7:  http://xorg.freedesktop.org/archive/individual/proto/fontsproto-2.1.2.tar.bz2
+Source8:  http://xorg.freedesktop.org/archive/individual/proto/glproto-1.4.16.tar.bz2
+Source9:  http://xorg.freedesktop.org/archive/individual/proto/inputproto-2.2.tar.bz2
+Source10: http://xorg.freedesktop.org/archive/individual/proto/kbproto-1.0.6.tar.bz2
+Source13: http://xorg.freedesktop.org/archive/individual/proto/randrproto-1.4.0.tar.bz2
+Source14: http://xorg.freedesktop.org/archive/individual/proto/recordproto-1.14.2.tar.bz2
 Source15: http://xorg.freedesktop.org/archive/individual/proto/renderproto-0.11.1.tar.bz2
 Source16: http://xorg.freedesktop.org/archive/individual/proto/resourceproto-1.2.0.tar.bz2
-Source17: http://xorg.freedesktop.org/archive/individual/proto/scrnsaverproto-1.2.1.tar.bz2
+Source17: http://xorg.freedesktop.org/archive/individual/proto/scrnsaverproto-1.2.2.tar.bz2
 Source19: http://xorg.freedesktop.org/archive/individual/proto/videoproto-2.3.1.tar.bz2
-Source20: http://xorg.freedesktop.org/archive/individual/proto/xcmiscproto-1.2.1.tar.bz2
-Source21: http://xorg.freedesktop.org/archive/individual/proto/xextproto-7.2.0.tar.bz2
+Source20: http://xorg.freedesktop.org/archive/individual/proto/xcmiscproto-1.2.2.tar.bz2
+Source21: http://xorg.freedesktop.org/archive/individual/proto/xextproto-7.2.1.tar.bz2
 Source22: http://xorg.freedesktop.org/archive/individual/proto/xf86bigfontproto-1.2.0.tar.bz2
 Source23: http://xorg.freedesktop.org/archive/individual/proto/xf86dgaproto-2.1.tar.bz2
 Source24: http://xorg.freedesktop.org/archive/individual/proto/xf86driproto-2.1.1.tar.bz2
 Source25: http://xorg.freedesktop.org/archive/individual/proto/xf86miscproto-0.9.3.tar.bz2
 Source27: http://xorg.freedesktop.org/archive/individual/proto/xf86vidmodeproto-2.3.1.tar.bz2
 Source28: http://xorg.freedesktop.org/archive/individual/proto/xineramaproto-1.2.1.tar.bz2
-Source29: http://xorg.freedesktop.org/archive/individual/proto/xproto-7.0.22.tar.bz2
+Source29: http://xorg.freedesktop.org/archive/individual/proto/xproto-7.0.23.tar.bz2
 Source30: http://xorg.freedesktop.org/archive/individual/proto/xproxymanagementprotocol-1.0.3.tar.bz2
 
 Source40: make-git-snapshot.sh
@@ -89,7 +89,7 @@ mv $RPM_BUILD_ROOT%{_docdir}/*/*.{txt,xml} .
 mv $RPM_BUILD_ROOT%{_docdir}/xproxymanagementprotocol/PM_spec .
 
 # keep things building even if you have the html doc tools for xmlto installed
-rm -f $RPM_BUILD_ROOT%{_docdir}/*/*.html
+rm -f $RPM_BUILD_ROOT%{_docdir}/*/*.{html,svg}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -266,6 +266,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/pkgconfig/xproxymngproto.pc
 
 %changelog
+* Wed Aug 29 2012 Peter Hutterer <peter.hutterer@redhat.com> 7.6-25
+- Drop now un-used patch file
+
+* Thu Jul 26 2012 Peter Hutterer <peter.hutterer@redhat.com> 7.6-24
+- Merge from F18 (#835206)
+
 * Wed Sep 21 2011 Adam Jackson <ajax@redhat.com> 7.6-13
 - Build --without-xmlto (#739242)
 
