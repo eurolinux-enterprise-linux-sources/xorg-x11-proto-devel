@@ -7,7 +7,7 @@
 Summary: X.Org X11 Protocol headers
 Name: xorg-x11-proto-devel
 Version: 7.7
-Release: 12%{?dist}
+Release: 13%{?dist}
 License: MIT
 Group: Development/System
 URL: http://www.x.org
@@ -47,6 +47,7 @@ Source40: make-git-snapshot.sh
 
 Patch1: presentproto-0001-Force-Window-and-Pixmap-to-be-CARD32-on-the-wire.patch
 Patch2: randrproto-0001-Add-a-GUID-property.patch
+Patch3: xproto-increase-number-of-file-descriptors.patch
 
 BuildRequires: pkgconfig
 BuildRequires: xorg-x11-util-macros >= 1.0.2-1
@@ -73,6 +74,9 @@ pushd randrproto-*
 %patch2 -p1
 popd
 
+pushd xproto-*
+%patch3 -p1
+popd
 
 %build
 
@@ -287,6 +291,9 @@ rm -f $RPM_BUILD_ROOT%{_docdir}/*/*.{html,svg}
 %{_datadir}/pkgconfig/xproxymngproto.pc
 
 %changelog
+* Tue Mar 22 2016 Olivier Fourdan <ofourdan@redhat.com> - 7.7-13
+- xproto: Increase number of file descriptors to 512
+
 * Thu Jun 12 2014 Hans de Goede <hdegoede@redhat.com> - 7.7-12
 - inputproto-2.3.1
 
