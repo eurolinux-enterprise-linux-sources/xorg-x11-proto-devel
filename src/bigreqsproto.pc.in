@@ -5,5 +5,5 @@ includedir=@includedir@
  
 Name: BigReqsProto
 Description: BigReqs extension headers
-Version: 1.1.2
+Version: @PACKAGE_VERSION@
 Cflags: -I${includedir}
