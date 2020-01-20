@@ -1,13 +1,13 @@
 # INFO: When doing a bootstrap build on a new architecture, set this to 1 to
 # avoid build loops.
-%define build_bootstrap 1
+%global build_bootstrap 1
 
-%define debug_package %{nil}
+%global debug_package %{nil}
 
 Summary: X.Org X11 Protocol headers
 Name: xorg-x11-proto-devel
 Version: 7.7
-Release: 13%{?dist}
+Release: 20%{?dist}
 License: MIT
 Group: Development/System
 URL: http://www.x.org
@@ -23,15 +23,15 @@ Source4:  http://xorg.freedesktop.org/archive/individual/proto/evieext-1.1.1.tar
 Source5:  http://xorg.freedesktop.org/archive/individual/proto/fixesproto-5.0.tar.bz2
 Source7:  http://xorg.freedesktop.org/archive/individual/proto/fontsproto-2.1.3.tar.bz2
 Source8:  http://xorg.freedesktop.org/archive/individual/proto/glproto-1.4.17.tar.bz2
-Source9:  http://xorg.freedesktop.org/archive/individual/proto/inputproto-2.3.1.tar.bz2
+Source9:  http://xorg.freedesktop.org/archive/individual/proto/inputproto-2.3.2.tar.bz2
 Source10: http://xorg.freedesktop.org/archive/individual/proto/kbproto-1.0.6.tar.bz2
 Source32: http://xorg.freedesktop.org/archive/individual/proto/presentproto-1.0.tar.bz2
-Source13: http://xorg.freedesktop.org/archive/individual/proto/randrproto-1.4.0.tar.bz2
+Source13: http://xorg.freedesktop.org/archive/individual/proto/randrproto-1.5.0.tar.bz2
 Source14: http://xorg.freedesktop.org/archive/individual/proto/recordproto-1.14.2.tar.bz2
 Source15: http://xorg.freedesktop.org/archive/individual/proto/renderproto-0.11.1.tar.bz2
 Source16: http://xorg.freedesktop.org/archive/individual/proto/resourceproto-1.2.0.tar.bz2
 Source17: http://xorg.freedesktop.org/archive/individual/proto/scrnsaverproto-1.2.2.tar.bz2
-Source19: http://xorg.freedesktop.org/archive/individual/proto/videoproto-2.3.2.tar.bz2
+Source19: http://xorg.freedesktop.org/archive/individual/proto/videoproto-2.3.3.tar.bz2
 Source20: http://xorg.freedesktop.org/archive/individual/proto/xcmiscproto-1.2.2.tar.bz2
 Source21: http://xorg.freedesktop.org/archive/individual/proto/xextproto-7.3.0.tar.bz2
 Source22: http://xorg.freedesktop.org/archive/individual/proto/xf86bigfontproto-1.2.0.tar.bz2
@@ -40,14 +40,12 @@ Source24: http://xorg.freedesktop.org/archive/individual/proto/xf86driproto-2.1.
 Source25: http://xorg.freedesktop.org/archive/individual/proto/xf86miscproto-0.9.3.tar.bz2
 Source27: http://xorg.freedesktop.org/archive/individual/proto/xf86vidmodeproto-2.3.1.tar.bz2
 Source28: http://xorg.freedesktop.org/archive/individual/proto/xineramaproto-1.2.1.tar.bz2
-Source29: http://xorg.freedesktop.org/archive/individual/proto/xproto-7.0.26.tar.bz2
+Source29: http://xorg.freedesktop.org/archive/individual/proto/xproto-7.0.31.tar.bz2
 Source30: http://xorg.freedesktop.org/archive/individual/proto/xproxymanagementprotocol-1.0.3.tar.bz2
 
 Source40: make-git-snapshot.sh
 
 Patch1: presentproto-0001-Force-Window-and-Pixmap-to-be-CARD32-on-the-wire.patch
-Patch2: randrproto-0001-Add-a-GUID-property.patch
-Patch3: xproto-increase-number-of-file-descriptors.patch
 
 BuildRequires: pkgconfig
 BuildRequires: xorg-x11-util-macros >= 1.0.2-1
@@ -68,14 +66,6 @@ X.Org X11 Protocol headers
 
 pushd presentproto-*
 %patch1 -p1
-popd
-
-pushd randrproto-*
-%patch2 -p1
-popd
-
-pushd xproto-*
-%patch3 -p1
 popd
 
 %build
@@ -291,8 +281,32 @@ rm -f $RPM_BUILD_ROOT%{_docdir}/*/*.{html,svg}
 %{_datadir}/pkgconfig/xproxymngproto.pc
 
 %changelog
-* Tue Mar 22 2016 Olivier Fourdan <ofourdan@redhat.com> - 7.7-13
-- xproto: Increase number of file descriptors to 512
+* Mon Sep 26 2016 Adam Jackson <ajax@redhat.com> - 7.7-20
+- xproto 7.0.31
+
+* Mon Apr 04 2016 Peter Hutterer <peter.hutterer@redhat.com> 7.7-19
+- inputproto 2.3.2
+
+* Fri Mar 11 2016 Adam Jackson <ajax@redhat.com> 7.7-18
+- videoproto 2.3.3
+
+* Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 7.7-17
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Wed Jan 20 2016 Peter Hutterer <peter.hutterer@redhat.com>
+- s/define/global/
+
+* Wed Jul 01 2015 Adam Jackson <ajax@redhat.com> 7.7-16
+- xproto 7.0.28
+
+* Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.7-15
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Sun May 17 2015 Dave Airlie <airlied@redhat.com> 7.7-14
+- randrproto-1.5.0
+
+* Wed Apr 01 2015 Dave Airlie <airlied@redhat.com> 7.7-13
+- randrproto-1.4.1
 
 * Thu Jun 12 2014 Hans de Goede <hdegoede@redhat.com> - 7.7-12
 - inputproto-2.3.1
